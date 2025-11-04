@@ -14,63 +14,63 @@
   /* https://coolors.co/59c3c3-52489c-ebebeb-cad2c5-84a98c */
 
   /* Robin Egg Blue */
-  --color-robin-egg-blue-100: #0f2a2a;
-  --color-robin-egg-blue-200: #1e5454;
-  --color-robin-egg-blue-300: #2d7e7e;
-  --color-robin-egg-blue-400: #3da8a8;
+  --color-robin-egg-blue-100: #def3f3;
+  --color-robin-egg-blue-200: #bde7e7;
+  --color-robin-egg-blue-300: #9cdbdb;
+  --color-robin-egg-blue-400: #7bcfcf;
   --color-robin-egg-blue-500: #59c3c3;
-  --color-robin-egg-blue-600: #7bcfcf;
-  --color-robin-egg-blue-700: #9cdbdb;
-  --color-robin-egg-blue-800: #bde7e7;
-  --color-robin-egg-blue-900: #def3f3;
+  --color-robin-egg-blue-600: #3da8a8;
+  --color-robin-egg-blue-700: #2d7e7e;
+  --color-robin-egg-blue-800: #1e5454;
+  --color-robin-egg-blue-900: #0f2a2a;
   --color-robin-egg-blue: #59c3c3;
 
   /* Ultra Violet */
-  --color-ultra-violet-100: #100e1f;
-  --color-ultra-violet-200: #211d3f;
-  --color-ultra-violet-300: #312b5e;
-  --color-ultra-violet-400: #423a7e;
+  --color-ultra-violet-100: #dbd9ed;
+  --color-ultra-violet-200: #b7b2dc;
+  --color-ultra-violet-300: #938cca;
+  --color-ultra-violet-400: #6f65b8;
   --color-ultra-violet-500: #52489c;
-  --color-ultra-violet-600: #6f65b8;
-  --color-ultra-violet-700: #938cca;
-  --color-ultra-violet-800: #b7b2dc;
-  --color-ultra-violet-900: #dbd9ed;
+  --color-ultra-violet-600: #423a7e;
+  --color-ultra-violet-700: #312b5e;
+  --color-ultra-violet-800: #211d3f;
+  --color-ultra-violet-900: #100e1f;
   --color-ultra-violet: #52489c;
 
   /* Anti-flash White */
-  --color-anti-flash-white-100: #2f2f2f;
-  --color-anti-flash-white-200: #5e5e5e;
-  --color-anti-flash-white-300: #8d8d8d;
-  --color-anti-flash-white-400: #bcbcbc;
+  --color-anti-flash-white-100: #fbfbfb;
+  --color-anti-flash-white-200: #f7f7f7;
+  --color-anti-flash-white-300: #f3f3f3;
+  --color-anti-flash-white-400: #efefef;
   --color-anti-flash-white-500: #ebebeb;
-  --color-anti-flash-white-600: #efefef;
-  --color-anti-flash-white-700: #f3f3f3;
-  --color-anti-flash-white-800: #f7f7f7;
-  --color-anti-flash-white-900: #fbfbfb;
+  --color-anti-flash-white-600: #bcbcbc;
+  --color-anti-flash-white-700: #8d8d8d;
+  --color-anti-flash-white-800: #5e5e5e;
+  --color-anti-flash-white-900: #2f2f2f;
   --color-anti-flash-white: #ebebeb;
 
   /* Ash Gray */
-  --color-ash-gray-100: #282e23;
-  --color-ash-gray-200: #4f5c47;
-  --color-ash-gray-300: #778a6a;
-  --color-ash-gray-400: #a0af97;
+  --color-ash-gray-100: #f4f6f3;
+  --color-ash-gray-200: #eaede8;
+  --color-ash-gray-300: #dfe4dc;
+  --color-ash-gray-400: #d5dcd1;
   --color-ash-gray-500: #cad2c5;
-  --color-ash-gray-600: #d5dcd1;
-  --color-ash-gray-700: #dfe4dc;
-  --color-ash-gray-800: #eaede8;
-  --color-ash-gray-900: #f4f6f3;
+  --color-ash-gray-600: #a0af97;
+  --color-ash-gray-700: #778a6a;
+  --color-ash-gray-800: #4f5c47;
+  --color-ash-gray-900: #282e23;
   --color-ash-gray: #cad2c5;
 
   /* Cambridge Blue */
-  --color-cambridge-blue-100: #19241b;
-  --color-cambridge-blue-200: #314736;
-  --color-cambridge-blue-300: #4a6b51;
-  --color-cambridge-blue-400: #638e6c;
+  --color-cambridge-blue-100: #e6eee8;
+  --color-cambridge-blue-200: #ceddd1;
+  --color-cambridge-blue-300: #b5ccba;
+  --color-cambridge-blue-400: #9cbaa3;
   --color-cambridge-blue-500: #84a98c;
-  --color-cambridge-blue-600: #9cbaa3;
-  --color-cambridge-blue-700: #b5ccba;
-  --color-cambridge-blue-800: #ceddd1;
-  --color-cambridge-blue-900: #e6eee8;
+  --color-cambridge-blue-600: #638e6c;
+  --color-cambridge-blue-700: #4a6b51;
+  --color-cambridge-blue-800: #314736;
+  --color-cambridge-blue-900: #19241b;
   --color-cambridge-blue: #84a98c;
 }
 

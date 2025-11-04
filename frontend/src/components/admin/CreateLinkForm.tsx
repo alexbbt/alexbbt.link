@@ -37,7 +37,6 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
   };
 
   const generateRandomSlug = () => {
-    // This is just a client-side helper - actual generation happens on backend
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let slug = '';
     for (let i = 0; i < 6; i++) {
@@ -47,12 +46,14 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Create Short Link</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white rounded-xl border border-ash-gray-200 p-6 sm:p-8">
+      <h2 className="text-lg sm:text-xl font-semibold text-ultra-violet-400 mb-6">
+        Create Short Link
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="url" className="block text-sm font-medium text-gray-700">
-            URL to Shorten *
+          <label htmlFor="url" className="block text-sm font-semibold text-ultra-violet-400 mb-2">
+            URL to Shorten <span className="text-red-600">*</span>
           </label>
           <input
             type="url"
@@ -60,20 +61,20 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="block w-full rounded-lg border-ash-gray-700 text-ultra-violet-400 placeholder-ultra-violet-700 focus:border-robin-egg-blue-500 focus:ring-2 focus:ring-robin-egg-blue-500/20 text-sm px-4 py-2.5 transition-all"
             placeholder="https://example.com"
           />
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-              Custom Slug (optional)
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+            <label htmlFor="slug" className="block text-sm font-semibold text-ultra-violet-400">
+              Custom Slug <span className="text-ultra-violet-600 font-normal">(optional)</span>
             </label>
             <button
               type="button"
               onClick={generateRandomSlug}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-xs sm:text-sm text-robin-egg-blue-200 hover:text-robin-egg-blue-100 font-bold self-start sm:self-auto transition-colors underline"
             >
               Generate Random
             </button>
@@ -83,24 +84,24 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
             id="slug"
             value={customSlug}
             onChange={(e) => setCustomSlug(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="block w-full rounded-lg border-ash-gray-700 text-ultra-violet-400 placeholder-ultra-violet-700 focus:border-robin-egg-blue-500 focus:ring-2 focus:ring-robin-egg-blue-500/20 text-sm px-4 py-2.5 transition-all"
             placeholder="my-link (leave empty for random)"
             pattern="[a-zA-Z0-9_-]+"
             maxLength={50}
           />
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-ultra-violet-600">
             Use alphanumeric characters, hyphens, or underscores
           </p>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded text-sm">
+          <div className="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-lg text-sm font-medium">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded text-sm">
+          <div className="bg-cambridge-blue-100 border border-cambridge-blue-700 text-cambridge-blue-100 px-4 py-3 rounded-lg text-sm font-medium">
             {success}
           </div>
         )}
@@ -108,7 +109,7 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
         <button
           type="submit"
           disabled={loading || !url}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full bg-robin-egg-blue-500 text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-robin-egg-blue-400 disabled:bg-ash-gray-700 disabled:cursor-not-allowed transition-all duration-200 text-sm shadow-sm hover:shadow disabled:shadow-none"
         >
           {loading ? 'Creating...' : 'Create Short Link'}
         </button>

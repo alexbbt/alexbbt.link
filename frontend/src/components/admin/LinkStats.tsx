@@ -7,73 +7,63 @@ interface LinkStatsProps {
 }
 
 export default function LinkStats({ stats }: LinkStatsProps) {
+  const statCards = [
+    {
+      label: 'Total Links',
+      value: stats.totalLinks,
+      icon: '🔗',
+      borderColor: 'border-robin-egg-blue-500',
+      iconBg: 'bg-robin-egg-blue-700',
+    },
+    {
+      label: 'Total Clicks',
+      value: stats.totalClicks.toLocaleString('en-US'),
+      icon: '👆',
+      borderColor: 'border-cambridge-blue-500',
+      iconBg: 'bg-cambridge-blue-700',
+    },
+    {
+      label: 'Active Links',
+      value: stats.activeLinks,
+      icon: '✓',
+      borderColor: 'border-ash-gray-200',
+      iconBg: 'bg-ash-gray-400',
+    },
+    {
+      label: 'Avg Clicks/Link',
+      value: stats.averageClicksPerLink.toFixed(1),
+      icon: '📊',
+      borderColor: 'border-ultra-violet-500',
+      iconBg: 'bg-ultra-violet-700',
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="bg-white overflow-hidden shadow rounded-lg">
-        <div className="p-5">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="text-2xl">🔗</div>
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Total Links</dt>
-                <dd className="text-lg font-medium text-gray-900">{stats.totalLinks}</dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white overflow-hidden shadow rounded-lg">
-        <div className="p-5">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="text-2xl">👆</div>
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Total Clicks</dt>
-                <dd className="text-lg font-medium text-gray-900">{stats.totalClicks.toLocaleString('en-US')}</dd>
-              </dl>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {statCards.map((stat, index) => (
+        <div
+          key={index}
+          className={`bg-white rounded-xl border ${stat.borderColor} overflow-hidden hover:shadow-md transition-all duration-200`}
+        >
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className={`flex-shrink-0 w-12 h-12 ${stat.iconBg} rounded-lg flex items-center justify-center`}>
+                <div className="text-xl">{stat.icon}</div>
+              </div>
+              <div className="ml-4 flex-1 min-w-0">
+                <dl>
+                  <dt className="text-xs font-semibold text-ultra-violet-500 truncate">
+                    {stat.label}
+                  </dt>
+                  <dd className="text-2xl font-bold text-ultra-violet-600 mt-1">
+                    {stat.value}
+                  </dd>
+                </dl>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="bg-white overflow-hidden shadow rounded-lg">
-        <div className="p-5">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="text-2xl">✓</div>
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Active Links</dt>
-                <dd className="text-lg font-medium text-gray-900">{stats.activeLinks}</dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white overflow-hidden shadow rounded-lg">
-        <div className="p-5">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="text-2xl">📊</div>
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Avg Clicks/Link</dt>
-                <dd className="text-lg font-medium text-gray-900">
-                  {stats.averageClicksPerLink.toFixed(1)}
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
