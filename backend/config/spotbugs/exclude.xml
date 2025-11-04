@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude EI_EXPOSE_REP2 for constructor dependency injection in Spring controllers -->
+    <!-- This is a false positive - Spring services are managed by the container and shouldn't be mutated externally -->
+    <!-- The fields are already final, preventing reassignment -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name="com.hna.webserver.controller.RedirectController"/>
+        <Method name="&lt;init&gt;"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name="com.hna.webserver.controller.ShortLinkController"/>
+        <Method name="&lt;init&gt;"/>
+    </Match>
+</FindBugsFilter>

@@ -49,7 +49,8 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Redirect /admin to /admin/ to ensure index.html is served
-        registry.addRedirectViewController("/admin", "/admin/");
+        // Map /admin to serve index.html from static/admin/
+        registry.addViewController("/admin").setViewName("forward:/admin/index.html");
+        registry.addViewController("/admin/").setViewName("forward:/admin/index.html");
     }
 }

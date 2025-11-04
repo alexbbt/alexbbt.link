@@ -43,3 +43,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Configure SpotBugs
+spotbugs {
+	toolVersion = '4.8.3'
+	excludeFilter = file("config/spotbugs/exclude.xml")
+}

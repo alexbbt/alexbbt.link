@@ -37,6 +37,8 @@ public class RedirectController {
     /**
      * Handles root-level redirects for short links.
      * This catches all routes that aren't reserved paths.
+     * Note: This mapping excludes reserved paths (admin, api, _next, favicon.ico)
+     * which are handled by static resources or other controllers.
      *
      * @param slug the slug to redirect
      * @param response HTTP response to set redirect
@@ -44,7 +46,8 @@ public class RedirectController {
      */
     @GetMapping("/{slug}")
     public void redirect(@PathVariable String slug, HttpServletResponse response) throws IOException {
-        // Skip reserved paths
+        // Skip reserved paths - these should never reach here if static resources are configured correctly
+        // But handle gracefully just in case
         if (RESERVED_PATHS.contains(slug.toLowerCase())) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return;
