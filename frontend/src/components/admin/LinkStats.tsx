@@ -34,7 +34,7 @@ export default function LinkStats({ stats }: LinkStatsProps) {
             <div className="ml-5 w-0 flex-1">
               <dl>
                 <dt className="text-sm font-medium text-gray-500 truncate">Total Clicks</dt>
-                <dd className="text-lg font-medium text-gray-900">{stats.totalClicks.toLocaleString()}</dd>
+                <dd className="text-lg font-medium text-gray-900">{stats.totalClicks.toLocaleString('en-US')}</dd>
               </dl>
             </div>
           </div>
