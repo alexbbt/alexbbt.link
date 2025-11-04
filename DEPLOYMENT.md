@@ -26,18 +26,16 @@
 
 ### Production Build
 
-#### Option 1: Build Script (Recommended)
+#### Option 1: Docker Compose (Recommended)
 
 ```bash
-./scripts/build-production.sh
+docker compose -f docker-compose.prod.yml up --build
 ```
 
 This will:
-1. Build Next.js static export
-2. Copy static files to Spring Boot resources
-3. Build Spring Boot JAR
-
-The JAR file will be in `backend/build/libs/`
+- Build the production Docker image
+- Start all services (app, db, redis)
+- Run everything in the background
 
 #### Option 2: Docker Build
 
@@ -45,11 +43,7 @@ The JAR file will be in `backend/build/libs/`
 docker build -f Dockerfile.prod -t url-shortener:latest .
 ```
 
-#### Option 3: Docker Compose
-
-```bash
-docker-compose -f docker-compose.prod.yml up --build
-```
+This only builds the image; you'll need to run services separately.
 
 ## Production Deployment
 

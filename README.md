@@ -337,8 +337,9 @@ If any of these commands fail, go back to the relevant setup step above.
 ├── docker-compose.prod.yml    # Production Docker services
 ├── Dockerfile.dev             # Development container image
 ├── Dockerfile.prod            # Production container image (multi-stage)
-├── scripts/                   # Build scripts
-│   └── build-production.sh    # Production build script
+├── scripts/                   # Utility scripts
+│   ├── create-user.sh        # Create user command
+│   └── create-link.sh        # Create link command
 ├── .nvmrc                     # Node.js version specification
 ├── sail                       # Command helper script
 ├── DEPLOYMENT.md              # Deployment guide
