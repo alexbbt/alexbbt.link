@@ -33,11 +33,12 @@ public class ShortLinkService {
      *
      * @param originalUrl the original URL to shorten
      * @param customSlug  optional custom slug (will generate random if not provided)
+     * @param createdBy   username of the user creating the link
      * @return the created ShortLink
      * @throws IllegalArgumentException if URL is invalid or slug is already taken
      */
     @Transactional
-    public ShortLink createShortLink(String originalUrl, String customSlug) {
+    public ShortLink createShortLink(String originalUrl, String customSlug, String createdBy) {
         // Validate and normalize URL
         String normalizedUrl = UrlValidator.validateAndNormalize(originalUrl);
         if (normalizedUrl == null) {
@@ -66,9 +67,10 @@ public class ShortLinkService {
         shortLink.setSlug(slug);
         shortLink.setOriginalUrl(normalizedUrl);
         shortLink.setIsActive(true);
+        shortLink.setCreatedBy(createdBy);
 
         ShortLink saved = repository.save(shortLink);
-        logger.info("Created short link: {} -> {}", slug, normalizedUrl);
+        logger.info("Created short link: {} -> {} (by: {})", slug, normalizedUrl, createdBy);
         return saved;
     }
 
@@ -163,6 +165,42 @@ public class ShortLinkService {
     @Transactional(readOnly = true)
     public java.util.List<ShortLink> getAllShortLinks() {
         return repository.findAll();
+    }
+
+    /**
+     * Gets short links created by a specific user.
+     *
+     * @param username the username
+     * @return list of short links created by the user
+     */
+    @Transactional(readOnly = true)
+    public java.util.List<ShortLink> getShortLinksByUser(String username) {
+        return repository.findByCreatedByOrderByCreatedAtDesc(username);
+    }
+
+    /**
+     * Gets statistics about short links for a specific user.
+     *
+     * @param username the username
+     * @return map of statistics
+     */
+    @Transactional(readOnly = true)
+    public java.util.Map<String, Object> getStatisticsForUser(String username) {
+        java.util.List<ShortLink> userLinks = repository.findByCreatedByOrderByCreatedAtDesc(username);
+        long totalLinks = userLinks.size();
+        long totalClicks = userLinks.stream()
+                .mapToLong(ShortLink::getClickCount)
+                .sum();
+        long activeLinks = userLinks.stream()
+                .filter(ShortLink::isValid)
+                .count();
+
+        java.util.Map<String, Object> stats = new java.util.HashMap<>();
+        stats.put("totalLinks", totalLinks);
+        stats.put("totalClicks", totalClicks);
+        stats.put("activeLinks", activeLinks);
+        stats.put("averageClicksPerLink", totalLinks > 0 ? (double) totalClicks / totalLinks : 0.0);
+        return stats;
     }
 
     /**

@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, ShortLink, ShortLinkStats, handleApiError, getAuthToken } from '@/lib/api';
-import CreateLinkForm from '@/components/admin/CreateLinkForm';
 import LinkList from '@/components/admin/LinkList';
 import LinkStats from '@/components/admin/LinkStats';
 
-export default function AdminPage() {
+export default function AllLinksPage() {
   const router = useRouter();
   const [links, setLinks] = useState<ShortLink[]>([]);
   const [stats, setStats] = useState<ShortLinkStats | null>(null);
@@ -17,7 +16,7 @@ export default function AdminPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [user, setUser] = useState<{ username: string; email: string; roles: string[] } | null>(null);
 
-  // Check authentication on mount
+  // Check authentication and admin role on mount
   useEffect(() => {
     const token = getAuthToken();
     if (!token) {
@@ -25,9 +24,14 @@ export default function AdminPage() {
       return;
     }
 
-    // Verify token by getting current user
+    // Verify token and check if user is admin
     api.auth.me()
       .then((userData) => {
+        if (!userData.roles.includes('ADMIN')) {
+          // Not an admin, redirect to home
+          router.push('/admin');
+          return;
+        }
         setUser({ username: userData.username, email: userData.email, roles: userData.roles });
       })
       .catch(() => {
@@ -39,7 +43,7 @@ export default function AdminPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.shortlinks.list(page, 20);
+      const response = await api.shortlinks.listAll(page, 20);
       setLinks(response.content);
       setTotalPages(response.totalPages);
     } catch (err) {
@@ -51,7 +55,7 @@ export default function AdminPage() {
 
   const loadStats = async () => {
     try {
-      const statsData = await api.shortlinks.stats();
+      const statsData = await api.shortlinks.statsAll();
       setStats(statsData);
     } catch (err) {
       console.error('Failed to load stats:', err);
@@ -59,14 +63,11 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    loadLinks();
-    loadStats();
-  }, [page]);
-
-  const handleLinkCreated = () => {
-    loadLinks();
-    loadStats();
-  };
+    if (user) {
+      loadLinks();
+      loadStats();
+    }
+  }, [page, user]);
 
   const handleLinkDeleted = () => {
     loadLinks();
@@ -94,20 +95,18 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">URL Shortener Admin</h1>
+            <h1 className="text-3xl font-bold text-gray-900">All Short Links</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Manage your short links and track statistics
+              View and manage all short links across all users (Admin Only)
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {user.roles.includes('ADMIN') && (
-              <a
-                href="/admin/all"
-                className="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-300 rounded-md hover:bg-blue-100"
-              >
-                View All Links
-              </a>
-            )}
+            <a
+              href="/admin"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              My Links
+            </a>
             <div className="text-right">
               <p className="text-sm font-medium text-gray-900">{user.username}</p>
               <p className="text-xs text-gray-500">{user.email}</p>
@@ -130,10 +129,6 @@ export default function AdminPage() {
         {stats && <LinkStats stats={stats} />}
 
         <div className="mt-8">
-          <CreateLinkForm onLinkCreated={handleLinkCreated} />
-        </div>
-
-        <div className="mt-8">
           <LinkList
             links={links}
             loading={loading}
@@ -141,6 +136,7 @@ export default function AdminPage() {
             page={page}
             totalPages={totalPages}
             onPageChange={setPage}
+            showCreatedBy={true}
           />
         </div>
       </div>

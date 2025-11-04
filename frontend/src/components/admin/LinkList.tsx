@@ -10,6 +10,7 @@ interface LinkListProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  showCreatedBy?: boolean;
 }
 
 export default function LinkList({
@@ -19,6 +20,7 @@ export default function LinkList({
   page,
   totalPages,
   onPageChange,
+  showCreatedBy = false,
 }: LinkListProps) {
   const [deleting, setDeleting] = useState<string | null>(null);
 
@@ -57,7 +59,7 @@ export default function LinkList({
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-xl font-semibold">All Short Links</h2>
+        <h2 className="text-xl font-semibold">{showCreatedBy ? 'All Short Links' : 'My Short Links'}</h2>
       </div>
 
       {links.length === 0 ? (
@@ -70,21 +72,26 @@ export default function LinkList({
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Slug
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Original URL
+                </th>
+                {showCreatedBy && (
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Slug
+                    Created By
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Original URL
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Clicks
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                )}
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Clicks
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Created
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -114,6 +121,11 @@ export default function LinkList({
                         {link.originalUrl}
                       </a>
                     </td>
+                    {showCreatedBy && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {link.createdBy || 'N/A'}
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {link.clickCount}
                     </td>

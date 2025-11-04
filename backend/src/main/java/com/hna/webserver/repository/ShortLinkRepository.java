@@ -20,5 +20,8 @@ public interface ShortLinkRepository extends JpaRepository<ShortLink, Long> {
 
     @Query("SELECT s FROM ShortLink s WHERE s.isActive = true AND (s.expiresAt IS NULL OR s.expiresAt > CURRENT_TIMESTAMP) ORDER BY s.updatedAt DESC")
     List<ShortLink> findValidActiveLinksOrderByUpdatedAtDesc();
-}
 
+    List<ShortLink> findByCreatedByOrderByCreatedAtDesc(String createdBy);
+
+    List<ShortLink> findByCreatedByAndIsActiveOrderByCreatedAtDesc(String createdBy, Boolean isActive);
+}

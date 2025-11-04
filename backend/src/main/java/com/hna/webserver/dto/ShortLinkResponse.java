@@ -13,13 +13,14 @@ public class ShortLinkResponse {
     private LocalDateTime updatedAt;
     private LocalDateTime expiresAt;
     private Boolean isActive;
+    private String createdBy;
 
     public ShortLinkResponse() {
     }
 
     public ShortLinkResponse(Long id, String slug, String shortUrl, String originalUrl,
                              Long clickCount, LocalDateTime createdAt, LocalDateTime updatedAt,
-                             LocalDateTime expiresAt, Boolean isActive) {
+                             LocalDateTime expiresAt, Boolean isActive, String createdBy) {
         this.id = id;
         this.slug = slug;
         this.shortUrl = shortUrl;
@@ -29,6 +30,7 @@ public class ShortLinkResponse {
         this.updatedAt = updatedAt;
         this.expiresAt = expiresAt;
         this.isActive = isActive;
+        this.createdBy = createdBy;
     }
 
     // Getters and Setters
@@ -102,5 +104,13 @@ public class ShortLinkResponse {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }
