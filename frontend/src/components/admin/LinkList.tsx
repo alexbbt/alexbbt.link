@@ -3,6 +3,17 @@
 import { useState } from 'react';
 import { api, ShortLink, handleApiError } from '@/lib/api';
 
+// Format date consistently to avoid hydration mismatches
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  // Use ISO format or consistent format to avoid locale differences
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
 interface LinkListProps {
   links: ShortLink[];
   loading: boolean;
@@ -130,7 +141,7 @@ export default function LinkList({
                       {link.clickCount}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(link.createdAt).toLocaleDateString()}
+                      {formatDate(link.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button

@@ -93,11 +93,14 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">URL Shortener Admin</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Manage your short links and track statistics
-            </p>
+          <div className="flex items-center gap-4">
+            <img src="/logo.svg" alt="alexbbt.link" className="h-12" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">URL Shortener Admin</h1>
+              <p className="mt-2 text-sm text-gray-600">
+                Manage your short links and track statistics
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             {user.roles.includes('ADMIN') && (
