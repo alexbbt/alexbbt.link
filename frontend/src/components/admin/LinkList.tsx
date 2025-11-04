@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { api, ShortLink } from '@/lib/api';
+import { api, ShortLink, handleApiError } from '@/lib/api';
 
 interface LinkListProps {
   links: ShortLink[];
@@ -32,7 +32,7 @@ export default function LinkList({
       await api.shortlinks.delete(slug);
       onLinkDeleted();
     } catch (err) {
-      alert(api.handleApiError(err));
+      alert(handleApiError(err));
     } finally {
       setDeleting(null);
     }

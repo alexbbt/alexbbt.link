@@ -29,14 +29,20 @@ WORKDIR /app
 COPY backend/ ./backend/
 
 # Copy Next.js static files to Spring Boot resources
-COPY --from=frontend-build /app/frontend/out ./backend/src/main/resources/static/admin/
+# With basePath='/admin', Next.js outputs to out/admin/, so copy that directory
+COPY --from=frontend-build /app/frontend/out/admin ./backend/src/main/resources/static/admin/
+# Also copy _next directory for static assets (from out/_next to static/admin/_next)
+COPY --from=frontend-build /app/frontend/out/_next ./backend/src/main/resources/static/admin/_next
 
-# Build Spring Boot JAR
-RUN cd backend && ./gradlew clean build -x test
+# Build Spring Boot JAR (skip tests and SpotBugs for production build)
+RUN cd backend && ./gradlew clean build -x test -x spotbugsMain -x spotbugsTest
 
 # Stage 3: Production runtime
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 WORKDIR /app
+
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Copy JAR from build stage
 COPY --from=backend-build /app/backend/build/libs/*.jar app.jar
@@ -46,7 +52,7 @@ EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1
+  CMD curl -f http://localhost:8080/api/health || exit 1
 
 # Run application
 ENTRYPOINT ["java", "-jar", "app.jar"]

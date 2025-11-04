@@ -62,22 +62,27 @@ NEXT_PUBLIC_API_BASE=/api
 ## 📡 API Integration
 
 ### Available Endpoints
-- `GET /api/hello` - Hello world endpoint
 - `GET /api/health` - Health check
-- `GET /api/users` - Sample users data
+- `POST /api/shortlinks` - Create a short link
+- `GET /api/shortlinks` - List all short links (paginated)
+- `GET /api/shortlinks/{slug}` - Get a short link by slug
+- `DELETE /api/shortlinks/{slug}` - Delete a short link
+- `GET /api/shortlinks/stats` - Get statistics
+- `GET /{slug}` - Redirect to original URL (root-level)
 
 ### Using the API in Next.js
 ```typescript
 import { api } from '@/lib/api';
 
-// Fetch data
-const data = await api.hello();
-const users = await api.users();
-const health = await api.health();
-```
+// Create a short link
+const link = await api.shortlinks.create({ url: 'https://example.com' });
 
-### API Demo Page
-Visit `http://localhost:3000/api-demo` to see a live demonstration of the API integration.
+// Get all links
+const links = await api.shortlinks.list();
+
+// Get statistics
+const stats = await api.shortlinks.stats();
+```
 
 ## 🛠️ Development Workflow
 
@@ -93,7 +98,7 @@ Visit `http://localhost:3000/api-demo` to see a live demonstration of the API in
 ### 2. Development URLs
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8080/api
-- **API Demo**: http://localhost:3000/api-demo
+- **Admin Interface**: http://localhost:3000/admin
 - **Database**: localhost:5432
 - **Redis**: localhost:6379
 - **Mail UI**: http://localhost:8025

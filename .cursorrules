@@ -42,7 +42,8 @@
 - Frontend runs OUTSIDE Docker for better development experience
 - Backend runs INSIDE Docker for consistent environment
 - Never run `./sail frontend` or `./sail backend` automatically - user manages these
-- API endpoints: `/api/hello`, `/api/health`, `/api/users`
+- API endpoints: `/api/health`, `/api/shortlinks`, `/{slug}` (redirects)
+- Admin interface: `/admin` (Next.js static files served by Spring Boot)
 - Environment variables in `frontend/.env.local` (if needed)
 
 ## Troubleshooting

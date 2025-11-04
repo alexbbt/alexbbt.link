@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { api, ShortLink, ShortLinkStats } from '@/lib/api';
+import { api, ShortLink, ShortLinkStats, handleApiError } from '@/lib/api';
 import CreateLinkForm from '@/components/admin/CreateLinkForm';
 import LinkList from '@/components/admin/LinkList';
 import LinkStats from '@/components/admin/LinkStats';
@@ -22,7 +22,7 @@ export default function AdminPage() {
       setLinks(response.content);
       setTotalPages(response.totalPages);
     } catch (err) {
-      setError(api.handleApiError(err));
+      setError(handleApiError(err));
     } finally {
       setLoading(false);
     }

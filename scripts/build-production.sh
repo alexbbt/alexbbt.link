@@ -26,7 +26,9 @@ echo "📋 Copying static files to Spring Boot..."
 cd ..
 mkdir -p backend/src/main/resources/static/admin
 rm -rf backend/src/main/resources/static/admin/*
-cp -r frontend/out/* backend/src/main/resources/static/admin/
+# With basePath='/admin', Next.js outputs to out/admin/
+cp -r frontend/out/admin/* backend/src/main/resources/static/admin/
+cp -r frontend/out/_next backend/src/main/resources/static/admin/_next
 
 echo "✅ Static files copied to Spring Boot resources"
 

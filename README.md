@@ -1,6 +1,8 @@
-# Spring Boot + Next.js Full-Stack Template
+# URL Shortener
 
-A modern full-stack web application template featuring Spring Boot backend and Next.js frontend with Docker-based development environment.
+A fast, performant URL shortener service built with Spring Boot and Next.js. Create short links with custom or random slugs, track click statistics, and manage everything through a modern admin interface.
+
+**Single-container production deployment** - Next.js frontend is built as static files and embedded in the Spring Boot JAR for simple deployment.
 
 **Zero-install development setup** - Get started instantly with Docker containers for all services and dependencies. No need to install Java, Gradle, or databases locally.
 
@@ -15,20 +17,21 @@ A modern full-stack web application template featuring Spring Boot backend and N
 - [API Integration](#api-integration)
 - [Development Notes](#development-notes)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Testing Production Build Locally](#testing-production-build-locally)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 
 ## Features
 
-- **Full-Stack Integration** - Spring Boot 3.5.6 backend with Next.js 15.5.4 frontend
-- **Containerized Development** - Backend runs in Docker, frontend runs locally for optimal development experience
-- **Instant Setup** - No local Java/Gradle installation required for backend
-- **Live Reload** - Automatic code changes with Spring Boot DevTools and Next.js hot reload
-- **Complete Stack** - PostgreSQL database, Redis cache, and Mailpit email testing
-- **API Integration** - Seamless communication between frontend and backend with CORS configuration
-- **Type Safety** - TypeScript interfaces for API responses and centralized API client
-- **CI/CD Ready** - GitHub Actions workflows for linting, building, and testing
-- **Simple Commands** - Easy-to-use `sail` CLI for all development tasks
+- **Fast Redirects** - Sub-10ms redirect lookups using Redis caching
+- **Custom & Random Slugs** - Create short links with custom slugs or auto-generated 6-character codes
+- **Admin Interface** - React-based admin panel at `/admin` for managing links and viewing statistics
+- **Root-Level Routing** - Short links work at domain root (e.g., `alexbbt.link/abc123`)
+- **Click Tracking** - Automatic click counting and analytics
+- **Production Ready** - Single-container deployment with Next.js static files embedded in Spring Boot
+- **High Performance** - Redis cache for active links, PostgreSQL for persistence
+- **Type Safe** - Full TypeScript interfaces for API responses
+- **Developer Friendly** - Hot reload for both frontend and backend during development
 
 ## Prerequisites
 
@@ -81,11 +84,12 @@ A modern full-stack web application template featuring Spring Boot backend and N
 
 ### 2. Clone the Repository
 
-1. Open the repository: https://github.com/HolyNamesAcademy/Projects-II-25-26/
-2. Click the green "Code" button and copy the repository URL
-3. Open VSCode and click "Clone Repository"
-4. Paste the repository URL and clone
-5. Open the project in VSCode
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd alexbbt.link
+   ```
+2. Open the project in your IDE
 
 ### 3. Fix Line Endings (Windows Users Only)
 
@@ -209,20 +213,19 @@ If any of these commands fail, go back to the relevant setup step above.
    ```
 
 4. **Verify everything is working:**
-   - Open http://localhost:3000 - you should see the frontend
-   - Open http://localhost:3000/api-demo - you should see API integration working
+   - Open http://localhost:3000/admin - you should see the admin interface
    - Open http://localhost:8080/api/health - you should see `{"status":"UP"}`
 
 ## 🌐 Development URLs
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Frontend** | http://localhost:3000 | Main application interface |
-| **API Demo** | http://localhost:3000/api-demo | API integration demonstration |
+| **Admin Interface** | http://localhost:3000/admin | URL shortener admin panel |
 | **Backend API** | http://localhost:8080/api | REST API endpoints |
+| **Short Links** | http://localhost:8080/{slug} | Redirect to original URL |
 | **Mailpit UI** | http://localhost:8025 | Email testing interface (SMTP: 1025) |
 | **PostgreSQL** | localhost:5432 | Database (user: `app`, pass: `app`, db: `app`) |
-| **Redis** | localhost:6379 | Cache and session storage |
+| **Redis** | localhost:6379 | Cache for active short links |
 
 ## Development Commands
 
@@ -301,8 +304,13 @@ If any of these commands fail, go back to the relevant setup step above.
 ├── backend/                    # Spring Boot backend
 │   ├── src/main/java/         # Java source code
 │   │   └── com/hna/webserver/
-│   │       ├── config/        # CORS configuration
-│   │       └── controller/    # REST controllers
+│   │       ├── config/        # CORS, Redis, Static resources
+│   │       ├── controller/    # RedirectController, ShortLinkController, HealthController
+│   │       ├── model/         # ShortLink entity
+│   │       ├── repository/   # ShortLinkRepository
+│   │       ├── service/       # ShortLinkService with caching
+│   │       ├── dto/           # Request/Response DTOs
+│   │       └── util/          # SlugGenerator, UrlValidator
 │   ├── src/main/resources/    # Application configuration
 │   │   ├── application.properties
 │   │   └── application-dev.yml # Docker dev profile
@@ -310,8 +318,13 @@ If any of these commands fail, go back to the relevant setup step above.
 │   └── config/checkstyle/     # Code quality configuration
 ├── frontend/                  # Next.js frontend
 │   ├── src/app/              # App router pages
-│   │   ├── api-demo/         # API integration demo page
-│   │   └── page.tsx          # Home page
+│   │   ├── admin/            # Admin interface for URL shortener
+│   │   │   └── page.tsx      # Admin dashboard
+│   │   └── page.tsx          # Home page (redirects to /admin)
+│   ├── src/components/admin/ # Admin UI components
+│   │   ├── CreateLinkForm.tsx
+│   │   ├── LinkList.tsx
+│   │   └── LinkStats.tsx
 │   ├── src/lib/              # API utilities
 │   │   └── api.ts            # Centralized API client
 │   ├── package.json          # Frontend dependencies
@@ -321,30 +334,42 @@ If any of these commands fail, go back to the relevant setup step above.
 │   ├── ci.yml                # Main CI pipeline
 │   ├── backend-*.yml         # Backend-specific workflows
 │   └── frontend-*.yml        # Frontend-specific workflows
-├── docker-compose.yml         # Docker services configuration
-├── Dockerfile.dev             # App container image
+├── docker-compose.yml         # Development Docker services
+├── docker-compose.prod.yml    # Production Docker services
+├── Dockerfile.dev             # Development container image
+├── Dockerfile.prod            # Production container image (multi-stage)
+├── scripts/                   # Build scripts
+│   └── build-production.sh    # Production build script
 ├── .nvmrc                     # Node.js version specification
 ├── sail                       # Command helper script
+├── DEPLOYMENT.md              # Deployment guide
 └── README.md                  # This file
 ```
 
 ## API Integration
 
-### Example Endpoints
-The backend includes sample REST endpoints to get you started:
-- `GET /api/hello` - Hello world
+### URL Shortener Endpoints
+The backend provides the following REST endpoints:
 - `GET /api/health` - Health check
-- `GET /api/users` - Sample data
-
-### API Demo Page
-Visit `http://localhost:3000/api-demo` to see the API integration in action.
+- `POST /api/shortlinks` - Create a short link
+- `GET /api/shortlinks` - List all short links (paginated)
+- `GET /api/shortlinks/{slug}` - Get a short link by slug
+- `DELETE /api/shortlinks/{slug}` - Delete a short link
+- `GET /api/shortlinks/stats` - Get statistics
+- `GET /{slug}` - Redirect to original URL (root-level)
 
 ### Using the API
 ```typescript
 import { api } from '@/lib/api';
 
-// Example usage
-const data = await api.hello();
+// Create a short link
+const link = await api.shortlinks.create({ url: 'https://example.com' });
+
+// Get all links
+const links = await api.shortlinks.list();
+
+// Get statistics
+const stats = await api.shortlinks.stats();
 ```
 
 ## Development Notes
@@ -354,9 +379,9 @@ const data = await api.hello();
 - **API Proxying**: Next.js automatically proxies `/api/*` to backend
 - **Type Safety**: TypeScript interfaces for all API responses
 - **Profiles**: Backend runs with `SPRING_PROFILES_ACTIVE=dev` in Docker
-- **Database**: PostgreSQL configured for development
-- **Caching**: Redis available for caching
-- **Email**: Mailpit for email testing
+- **Database**: PostgreSQL stores all short links with automatic schema creation
+- **Caching**: Redis caches active links for 24 hours for fast redirects
+- **Email**: Mailpit available for email testing (if needed in future)
 
 ### Development Workflow
 
@@ -365,15 +390,79 @@ const data = await api.hello();
 3. **Run frontend**: `./sail frontend` (in another terminal)
 4. **Make changes**: Edit code in your IDE
 5. **See changes**: Frontend updates automatically, backend restarts automatically
-6. **Test API**: Visit `http://localhost:3000/api-demo` to test integration
+6. **Test**: Visit `http://localhost:3000/admin` to create short links
 
 ## CI/CD Pipeline
 
 The `.github/workflows/` folder contains GitHub Actions workflows that automatically run on every push and pull request, handling linting, building, and testing for both frontend and backend.
 
+## Testing Production Build Locally
+
+Test the production Docker image locally before deploying:
+
+### Build and Run Production Stack
+
+```bash
+# Build and start all services (app, database, redis)
+docker compose -f docker-compose.prod.yml up --build
+
+# Or run in detached mode
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+This will:
+1. Build the Next.js frontend as static files
+2. Package frontend files into Spring Boot JAR
+3. Build the production Docker image
+4. Start PostgreSQL, Redis, and the application
+
+### Access the Application
+
+Once running, access:
+- **Admin Interface**: http://localhost:8080/admin
+- **API Health Check**: http://localhost:8080/api/health
+- **Short Links**: http://localhost:8080/{slug}
+
+### View Logs
+
+```bash
+# View all logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# View app logs only
+docker-compose -f docker-compose.prod.yml logs -f app
+```
+
+### Stop Services
+
+```bash
+# Stop and remove containers
+docker-compose -f docker-compose.prod.yml down
+
+# Stop and remove containers + volumes (clears database)
+docker-compose -f docker-compose.prod.yml down -v
+```
+
+### Environment Variables
+
+You can override the base URL for testing:
+
+```bash
+BASE_URL=http://localhost:8080 docker-compose -f docker-compose.prod.yml up --build
+```
+
 ## Deployment
 
-This template is ready for deployment to any cloud provider that supports Spring Boot and Next.js applications. Update the environment variables in your deployment platform to point to your production services.
+The application is designed for production deployment with a single Docker container. The Next.js frontend is built as static files and embedded in the Spring Boot JAR, eliminating the need for a separate frontend server or reverse proxy.
+
+### Production Features
+
+- **Single Container** - One Docker image contains everything (backend + frontend)
+- **No Node.js Runtime** - Only Java/JVM needed in production
+- **Fast Redirects** - Direct Spring Boot routing for root-level short links
+- **Static Admin UI** - Admin interface served as static files from Spring Boot
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions and production configuration.
 
 ## Troubleshooting
 
@@ -412,6 +501,28 @@ This template is ready for deployment to any cloud provider that supports Spring
   - Ensure PostgreSQL is running: `./sail ps`
   - Check database logs: `./sail logs db`
   - Verify connection settings in `application-dev.yml`
+  - Database schema is created automatically on first run
+
+  </details>
+
+  <details>
+  <summary><strong>🔗 Short Link Redirects Not Working</strong></summary>
+
+  - Verify the slug exists: Check admin interface or database
+  - Check Redis is running: `./sail ps` (should see redis container)
+  - Verify redirect controller is working: `curl http://localhost:8080/api/health`
+  - Check application logs for errors: `./sail logs`
+
+  </details>
+
+  <details>
+  <summary><strong>📊 Admin Interface Not Loading</strong></summary>
+
+  - Ensure you're accessing `/admin` (not root)
+  - In development: Visit http://localhost:3000/admin
+  - In production: Visit http://localhost:8080/admin
+  - Check browser console for errors
+  - Verify API is accessible: `curl http://localhost:8080/api/health`
 
   </details>
 
@@ -459,7 +570,7 @@ This template is ready for deployment to any cloud provider that supports Spring
 
 # Test API endpoints directly
 curl http://localhost:8080/api/health
-curl http://localhost:8080/api/hello
+curl http://localhost:8080/api/shortlinks/stats
 ```
 
 ### Getting Help

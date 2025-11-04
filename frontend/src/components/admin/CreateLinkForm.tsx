@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { api } from '@/lib/api';
+import { api, handleApiError } from '@/lib/api';
 
 interface CreateLinkFormProps {
   onLinkCreated: () => void;
@@ -30,7 +30,7 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
       setCustomSlug('');
       onLinkCreated();
     } catch (err) {
-      setError(api.handleApiError(err));
+      setError(handleApiError(err));
     } finally {
       setLoading(false);
     }

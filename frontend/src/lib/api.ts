@@ -62,7 +62,7 @@ export interface ShortLinkStats {
   averageClicksPerLink: number;
 }
 
-// API functions for your Spring Boot endpoints
+// API functions for Spring Boot endpoints
 export const api = {
   // Health check
   health: () => apiCall<{
@@ -71,26 +71,6 @@ export const api = {
     version: string;
     timestamp: string;
   }>('/health'),
-
-  // Hello endpoint
-  hello: () => apiCall<{
-    message: string;
-    timestamp: string;
-    status: string;
-  }>('/hello'),
-
-  // Users endpoint
-  users: () => apiCall<{
-    users: Array<{
-      id: number;
-      name: string;
-      email: string;
-      role: string;
-    }>;
-    total: number;
-    timestamp: string;
-    status: string;
-  }>('/users'),
 
   // ShortLink endpoints
   shortlinks: {
