@@ -3,7 +3,6 @@ package com.hna.webserver.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.ResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
@@ -45,12 +44,5 @@ public class StaticResourceConfig implements WebMvcConfigurer {
                         return chain.resolveUrlPath(resourcePath, locations);
                     }
                 });
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        // Map /admin to serve index.html from static/admin/
-        registry.addViewController("/admin").setViewName("forward:/admin/index.html");
-        registry.addViewController("/admin/").setViewName("forward:/admin/index.html");
     }
 }
