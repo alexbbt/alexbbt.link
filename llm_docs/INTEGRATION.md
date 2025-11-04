@@ -8,7 +8,6 @@ This project demonstrates how to integrate Spring Boot (backend) with Next.js (f
 - **Frontend**: Next.js 15.5.4 with React 19
 - **Database**: PostgreSQL 16
 - **Cache**: Redis 7
-- **Mail**: Mailpit (for development)
 - **Development**: Docker Compose + Sail script
 
 ## 🚀 Quick Start

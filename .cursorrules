@@ -3,7 +3,7 @@
 ## Project Structure
 - **Backend**: Spring Boot 3.5.6 with Java 17 in `backend/` directory
 - **Frontend**: Next.js 15.5.4 with React 19 in `frontend/` directory
-- **Database**: PostgreSQL 16, Redis 7, Mailpit in Docker containers
+- **Database**: PostgreSQL 16, Redis 7 in Docker containers
 - **Development**: Use `sail` script for all commands
 
 ## Development Commands

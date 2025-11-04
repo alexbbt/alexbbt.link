@@ -223,7 +223,6 @@ If any of these commands fail, go back to the relevant setup step above.
 | **Admin Interface** | http://localhost:3000/admin | URL shortener admin panel |
 | **Backend API** | http://localhost:8080/api | REST API endpoints |
 | **Short Links** | http://localhost:8080/{slug} | Redirect to original URL |
-| **Mailpit UI** | http://localhost:8025 | Email testing interface (SMTP: 1025) |
 | **PostgreSQL** | localhost:5432 | Database (user: `app`, pass: `app`, db: `app`) |
 | **Redis** | localhost:6379 | Cache for active short links |
 
@@ -381,7 +380,6 @@ const stats = await api.shortlinks.stats();
 - **Profiles**: Backend runs with `SPRING_PROFILES_ACTIVE=dev` in Docker
 - **Database**: PostgreSQL stores all short links with automatic schema creation
 - **Caching**: Redis caches active links for 24 hours for fast redirects
-- **Email**: Mailpit available for email testing (if needed in future)
 
 ### Development Workflow
 

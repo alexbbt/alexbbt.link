@@ -19,8 +19,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-      mail:
-        condition: service_started
     # By default we keep the container idle; the sail script runs tasks via exec
     command: ["bash", "-lc", "tail -f /dev/null"]
 
@@ -49,13 +47,6 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
-
-  mail:
-    image: axllent/mailpit:latest
-    container_name: mail
-    ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # UI http://localhost:8025
 
 volumes:
   db-data:
