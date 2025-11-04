@@ -1,12 +1,26 @@
 import type { NextConfig } from "next";
 
+// Determine if we're building for production static export
+const isProduction = process.env.NODE_ENV === 'production';
+const isStaticExport = process.env.NEXT_STATIC_EXPORT === 'true';
+
 const nextConfig: NextConfig = {
+  // Enable static export for production builds
+  ...(isStaticExport && {
+    output: 'export',
+    trailingSlash: true,
+    basePath: '/admin',
+    assetPrefix: '/admin',
+  }),
+
   // Enable experimental features for better development experience
   experimental: {
-    // Enable server actions
-    serverActions: {
-      allowedOrigins: ['localhost:3000'],
-    },
+    // Enable server actions (only in development)
+    ...(!isStaticExport && {
+      serverActions: {
+        allowedOrigins: ['localhost:3000'],
+      },
+    }),
   },
 
   // Environment variables

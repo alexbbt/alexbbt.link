@@ -1,0 +1,52 @@
+# Multi-stage Dockerfile for production deployment
+# Builds Next.js static export and packages it into Spring Boot JAR
+
+# Stage 1: Build Next.js frontend
+FROM node:22-alpine AS frontend-build
+WORKDIR /app/frontend
+
+# Copy package files
+COPY frontend/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy frontend source
+COPY frontend/ ./
+
+# Build Next.js static export
+ENV NEXT_STATIC_EXPORT=true
+RUN npm run build
+
+# Verify build output
+RUN test -d out || (echo "Next.js build failed - 'out' directory not found" && exit 1)
+
+# Stage 2: Build Spring Boot backend
+FROM gradle:8-jdk17 AS backend-build
+WORKDIR /app
+
+# Copy backend source
+COPY backend/ ./backend/
+
+# Copy Next.js static files to Spring Boot resources
+COPY --from=frontend-build /app/frontend/out ./backend/src/main/resources/static/admin/
+
+# Build Spring Boot JAR
+RUN cd backend && ./gradlew clean build -x test
+
+# Stage 3: Production runtime
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Copy JAR from build stage
+COPY --from=backend-build /app/backend/build/libs/*.jar app.jar
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1
+
+# Run application
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -23,7 +23,9 @@ public class CorsConfig implements WebMvcConfigurer {
                     "http://localhost:3000",  // Next.js dev server
                     "http://127.0.0.1:3000",
                     "http://localhost:3001",  // Alternative port
-                    "http://127.0.0.1:3001"
+                    "http://127.0.0.1:3001",
+                    "https://alexbbt.link",   // Production domain
+                    "http://localhost:8080"  // Same origin for production (static files served by Spring Boot)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
