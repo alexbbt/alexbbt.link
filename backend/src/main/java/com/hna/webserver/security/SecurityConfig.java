@@ -46,12 +46,13 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
+                .requestMatchers("/").permitAll() // Landing page
                 .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/{slug}").permitAll() // Short link redirects
                 .requestMatchers("/admin/**").permitAll() // Admin UI (static files)
                 .requestMatchers("/_next/**").permitAll() // Next.js assets
-                .requestMatchers("/*.ico", "/*.png", "/*.svg").permitAll() // Public assets
+                .requestMatchers("/*.ico", "/*.png", "/*.svg", "/*.html").permitAll() // Public assets
                 // Protected endpoints
                 .requestMatchers("/api/shortlinks/**").authenticated()
                 .anyRequest().authenticated()
