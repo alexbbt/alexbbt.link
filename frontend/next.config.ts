@@ -9,8 +9,6 @@ const nextConfig: NextConfig = {
   ...(isStaticExport && {
     output: 'export',
     trailingSlash: true,
-    basePath: '/admin',
-    assetPrefix: '/admin',
   }),
 
   // Enable experimental features for better development experience
