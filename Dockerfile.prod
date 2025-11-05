@@ -29,10 +29,7 @@ WORKDIR /app
 COPY backend/ ./backend/
 
 # Copy Next.js static files to Spring Boot resources
-# With basePath='/admin', Next.js outputs to out/admin/, so copy that directory
-COPY --from=frontend-build /app/frontend/out/admin ./backend/src/main/resources/static/admin/
-# Also copy _next directory for static assets (from out/_next to static/admin/_next)
-COPY --from=frontend-build /app/frontend/out/_next ./backend/src/main/resources/static/admin/_next
+COPY --from=frontend-build /app/frontend/out ./backend/src/main/resources/static
 
 # Build Spring Boot JAR (skip tests and SpotBugs for production build)
 RUN cd backend && ./gradlew clean build -x test -x spotbugsMain -x spotbugsTest

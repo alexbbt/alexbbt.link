@@ -1,9 +1,12 @@
 package com.hna.webserver.controller;
 
 import com.hna.webserver.service.ShortLinkService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +18,10 @@ import java.util.Set;
 /**
  * Controller for handling root-level redirects (short links).
  * Handles routes like /{slug} to redirect to original URLs.
+ * Set to LOWEST_PRECEDENCE to allow static resources to be served first.
  */
 @RestController
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class RedirectController {
 
     private static final Logger logger = LoggerFactory.getLogger(RedirectController.class);
@@ -36,17 +41,18 @@ public class RedirectController {
 
     /**
      * Handles root-level redirects for short links.
-     * This catches all routes that aren't reserved paths.
-     * Note: This mapping excludes reserved paths (admin, api, _next, favicon.ico)
+     * This catches all routes that aren't reserved paths or static files.
+     * Uses regex to exclude paths containing dots (file extensions).
+     * Note: This mapping excludes reserved paths (admin, api, _next) and files
      * which are handled by static resources or other controllers.
      *
      * @param slug the slug to redirect
      * @param response HTTP response to set redirect
      * @throws IOException if redirect fails
      */
-    @GetMapping("/{slug}")
+    @GetMapping("/{slug:[^.]+}")
     public void redirect(@PathVariable String slug, HttpServletResponse response) throws IOException {
-        // Skip reserved paths - these should never reach here if static resources are configured correctly
+        // Skip reserved paths - these should never reach here due to regex pattern and static resources
         // But handle gracefully just in case
         if (RESERVED_PATHS.contains(slug.toLowerCase())) {
             response.setStatus(HttpStatus.NOT_FOUND.value());

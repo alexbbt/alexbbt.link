@@ -50,6 +50,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/{slug}").permitAll() // Short link redirects
                 .requestMatchers("/admin/**").permitAll() // Admin UI (static files)
+                .requestMatchers("/_next/**").permitAll() // Next.js assets
+                .requestMatchers("/*.ico", "/*.png", "/*.svg").permitAll() // Public assets
                 // Protected endpoints
                 .requestMatchers("/api/shortlinks/**").authenticated()
                 .anyRequest().authenticated()

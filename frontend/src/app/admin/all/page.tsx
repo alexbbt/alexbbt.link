@@ -99,12 +99,12 @@ export default function AllLinksPage() {
         user={user}
         onLogout={handleLogout}
         additionalButtons={
-          <a
-            href="/admin"
+          <button
+            onClick={() => router.push('/admin')}
             className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-ultra-violet-400 bg-white border border-ash-gray-200 rounded-lg hover:bg-ash-gray-100 hover:border-ash-gray-700 transition-all duration-200"
           >
             My Links
-          </a>
+          </button>
         }
       />
 

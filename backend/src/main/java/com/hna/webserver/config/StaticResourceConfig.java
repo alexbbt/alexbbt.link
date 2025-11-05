@@ -1,6 +1,7 @@
 package com.hna.webserver.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,6 +20,9 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Don't override default static resource handling - Spring Boot automatically serves
+        // files from classpath:/static/ for root-level assets (logo.svg, favicon.png, etc.)
+
         // Serve Next.js static files from /admin
         // With basePath='/admin', files are in out/admin/ and copied to static/admin/
         // Handle /admin and /admin/** paths
@@ -31,11 +35,21 @@ public class StaticResourceConfig implements WebMvcConfigurer {
                     public Resource resolveResource(HttpServletRequest request, String requestPath,
                                                     List<? extends Resource> locations,
                                                     ResourceResolverChain chain) {
-                        // If requesting /admin (without trailing slash), try to serve index.html
-                        if (requestPath.equals("admin") || requestPath.equals("admin/")) {
-                            return chain.resolveResource(request, "admin/index.html", locations);
+                        // Try the exact path first
+                        Resource resource = chain.resolveResource(request, requestPath, locations);
+                        if (resource != null) {
+                            return resource;
                         }
-                        return chain.resolveResource(request, requestPath, locations);
+
+                        // For paths without extensions (likely directories), try index.html
+                        if (!requestPath.contains(".")) {
+                            String indexPath = requestPath.endsWith("/")
+                                ? requestPath + "index.html"
+                                : requestPath + "/index.html";
+                            return chain.resolveResource(request, indexPath, locations);
+                        }
+
+                        return null;
                     }
 
                     @Override
