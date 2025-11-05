@@ -71,3 +71,19 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           echo "Image pushed with digest: ${{ steps.build.outputs.digest }}"
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Deploy to production
+        uses: alexbbt/gitops-image-update@main
+        with:
+          REPOSITORY_NAME: 'alexbbt/hogwarts-fleet'
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: "main"
+
+          VALUES_FILE_PATH: |-
+            alexbbt-link/03-deployment.yaml
+          VALUE_NAME: 'image: "ghcr.io/alexbbt/alexbbt.link'
+          TAG: 'sha-${{ steps.vars.outputs.sha_short }}'
