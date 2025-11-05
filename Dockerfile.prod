@@ -5,41 +5,44 @@
 FROM node:22-alpine AS frontend-build
 WORKDIR /app/frontend
 
-# Copy package files
+# Copy package files and install dependencies (cached layer)
 COPY frontend/package*.json ./
+RUN npm ci --prefer-offline --no-audit
 
-# Install dependencies
-RUN npm ci
-
-# Copy frontend source
+# Copy source and build (only rebuilds when source changes)
 COPY frontend/ ./
-
-# Build Next.js static export
 ENV NEXT_STATIC_EXPORT=true
-RUN npm run build
-
-# Verify build output
-RUN test -d out || (echo "Next.js build failed - 'out' directory not found" && exit 1)
+RUN npm run build && test -d out || (echo "Next.js build failed" && exit 1)
 
 # Stage 2: Build Spring Boot backend
 FROM gradle:8-jdk17 AS backend-build
-WORKDIR /app
+WORKDIR /app/backend
 
-# Copy backend source
-COPY backend/ ./backend/
+# Copy Gradle wrapper and build files first (cached layer for dependencies)
+COPY backend/gradlew* ./
+COPY backend/gradle ./gradle
+COPY backend/build.gradle backend/settings.gradle ./
+
+# Download dependencies (heavy, but cached unless build.gradle changes)
+RUN ./gradlew dependencies --no-daemon --quiet || true
+
+# Copy source code (only rebuilds when source changes)
+COPY backend/src ./src
+COPY backend/config ./config
 
 # Copy Next.js static files to Spring Boot resources
-COPY --from=frontend-build /app/frontend/out ./backend/src/main/resources/static
+COPY --from=frontend-build /app/frontend/out ./src/main/resources/static
 
-# Build Spring Boot JAR (skip tests and SpotBugs for production build)
-RUN cd backend && ./gradlew clean build -x test -x spotbugsMain -x spotbugsTest
+# Build JAR (skip clean - no need in fresh container)
+RUN ./gradlew build -x test -x spotbugsMain -x spotbugsTest --no-daemon --parallel
 
 # Stage 3: Production runtime
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Install curl for healthcheck
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install curl for healthcheck (single layer, cleaned up)
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy JAR from build stage
 COPY --from=backend-build /app/backend/build/libs/*.jar app.jar
