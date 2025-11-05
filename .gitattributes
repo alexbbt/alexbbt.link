@@ -1,3 +1,20 @@
+# Default to Unix line endings for text files
+* text=auto eol=lf
+
+# Binary files (should not be affected by line ending conversion)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.jar binary
+*.class binary
+
 # Ensure shell scripts use Unix line endings
 *.sh text eol=lf
 sail text eol=lf
@@ -5,8 +22,3 @@ sail text eol=lf
 # Ensure gradlew files use Unix line endings
 gradlew text eol=lf
 gradlew.bat text eol=crlf
-
-*.png binary
-
-# Default to Unix line endings for text files
-* text eol=lf
