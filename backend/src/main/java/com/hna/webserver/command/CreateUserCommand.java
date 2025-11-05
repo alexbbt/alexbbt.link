@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class CreateUserCommand implements CommandLineRunner {
         }
 
         logger.info("=== Create User Command ===");
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 
         try {
             System.out.print("Enter username: ");

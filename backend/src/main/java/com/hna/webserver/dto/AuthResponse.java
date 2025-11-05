@@ -1,5 +1,6 @@
 package com.hna.webserver.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class AuthResponse {
@@ -16,7 +17,7 @@ public class AuthResponse {
         this.token = token;
         this.username = username;
         this.email = email;
-        this.roles = roles;
+        this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
     }
 
     public String getToken() {
@@ -44,10 +45,10 @@ public class AuthResponse {
     }
 
     public Set<String> getRoles() {
-        return roles;
+        return roles != null ? new HashSet<>(roles) : new HashSet<>();
     }
 
     public void setRoles(Set<String> roles) {
-        this.roles = roles;
+        this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
     }
 }

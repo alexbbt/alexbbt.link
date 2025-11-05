@@ -98,11 +98,11 @@ public class User {
     }
 
     public Set<Role> getRoles() {
-        return roles;
+        return roles != null ? new HashSet<>(roles) : new HashSet<>();
     }
 
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
     }
 
     public void addRole(Role role) {

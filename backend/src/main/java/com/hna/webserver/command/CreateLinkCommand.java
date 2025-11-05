@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -45,7 +46,7 @@ public class CreateLinkCommand implements CommandLineRunner {
         }
 
         logger.info("=== Create Short Link Command ===");
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 
         try {
             System.out.print("Enter URL to shorten: ");
