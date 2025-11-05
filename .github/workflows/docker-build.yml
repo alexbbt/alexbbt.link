@@ -49,7 +49,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
@@ -77,12 +77,12 @@ jobs:
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Deploy to production
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: alexbbt/gitops-image-update@main
         with:
           REPOSITORY_NAME: 'alexbbt/hogwarts-fleet'
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: "main"
-
           VALUES_FILE_PATH: |-
             alexbbt-link/03-deployment.yaml
           VALUE_NAME: 'image: "ghcr.io/alexbbt/alexbbt.link'
