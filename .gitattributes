@@ -6,5 +6,7 @@ sail text eol=lf
 gradlew text eol=lf
 gradlew.bat text eol=crlf
 
+*.png binary
+
 # Default to Unix line endings for text files
 * text eol=lf
