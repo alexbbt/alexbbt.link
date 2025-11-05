@@ -1,6 +1,24 @@
 // API utility functions for communicating with Spring Boot backend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+// In production (static export served by Spring Boot), use relative URLs (same origin)
+// In development, use localhost:3000 which proxies to localhost:8080
+const getApiBaseUrl = (): string => {
+  // In browser, check if we're on localhost (dev) or production
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin;
+    // If running on localhost:3000 (dev), use the full URL to backend
+    if (origin.includes('localhost:3000')) {
+      return 'http://localhost:8080';
+    }
+    // Otherwise (production), use same origin (relative URL)
+    return origin;
+  }
+
+  // SSR fallback (shouldn't happen with static export, but just in case)
+  return 'http://localhost:8080';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 const API_BASE_PATH = process.env.NEXT_PUBLIC_API_BASE || '/api';
 
 export const API_URL = `${API_BASE_URL}${API_BASE_PATH}`;
