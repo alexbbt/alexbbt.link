@@ -13,20 +13,20 @@ export default function LinkStats({ stats }: LinkStatsProps) {
       value: stats.totalLinks,
       icon: '🔗',
       borderColor: 'border-robin-egg-blue-500',
-      iconBg: 'bg-robin-egg-blue-700',
+      iconBg: 'bg-robin-egg-blue-400',
     },
     {
       label: 'Total Clicks',
       value: stats.totalClicks.toLocaleString('en-US'),
       icon: '👆',
       borderColor: 'border-cambridge-blue-500',
-      iconBg: 'bg-cambridge-blue-700',
+      iconBg: 'bg-cambridge-blue-400',
     },
     {
       label: 'Active Links',
       value: stats.activeLinks,
       icon: '✓',
-      borderColor: 'border-ash-gray-200',
+      borderColor: 'border-ash-gray-600',
       iconBg: 'bg-ash-gray-400',
     },
     {
@@ -34,7 +34,7 @@ export default function LinkStats({ stats }: LinkStatsProps) {
       value: stats.averageClicksPerLink.toFixed(1),
       icon: '📊',
       borderColor: 'border-ultra-violet-500',
-      iconBg: 'bg-ultra-violet-700',
+      iconBg: 'bg-ultra-violet-400',
     },
   ];
 
