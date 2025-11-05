@@ -35,12 +35,6 @@ export default function LoginForm() {
           <div className="flex justify-center mb-6">
             <img src="/logo.svg" alt="alexbbt.link" className="h-16 sm:h-20" />
           </div>
-          <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-ultra-violet-400">
-            Sign in to Admin
-          </h2>
-          <p className="mt-2 text-center text-sm text-ultra-violet-600">
-            URL Shortener Administration
-          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
