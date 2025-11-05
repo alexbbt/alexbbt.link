@@ -111,7 +111,7 @@ export default function AdminPage() {
               {user.roles.includes('ADMIN') && (
                 <a
                   href="/admin/all"
-                  className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-robin-egg-blue-400 bg-robin-egg-blue-100 border border-robin-egg-blue-200 rounded-lg hover:bg-robin-egg-blue-900 hover:border-robin-egg-blue-700 transition-all duration-200"
+                  className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-robin-egg-blue-600 bg-robin-egg-blue-100 border border-robin-egg-blue-400 rounded-lg hover:bg-robin-egg-blue-900 hover:border-robin-egg-blue-700 transition-all duration-200"
                 >
                   <span className="hidden sm:inline">View All Links</span>
                   <span className="sm:hidden">All</span>

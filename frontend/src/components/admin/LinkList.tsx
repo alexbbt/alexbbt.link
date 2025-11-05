@@ -65,7 +65,7 @@ export default function LinkList({
     return (
       <div className="bg-white rounded-xl border border-ash-gray-200 p-8 sm:p-12">
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-robin-egg-blue-200 border-t-robin-egg-blue-500"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-robin-egg-blue-400 border-t-robin-egg-blue-600"></div>
           <p className="mt-4 text-ultra-violet-500">Loading links...</p>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default function LinkList({
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2.5">
-                      <code className="text-xs font-mono bg-robin-egg-blue-100 text-robin-egg-blue-300 px-2.5 py-1.5 rounded-md border border-robin-egg-blue-200 truncate max-w-[60%] font-semibold">
+                      <code className="text-xs font-mono bg-robin-egg-blue-100 text-robin-egg-blue-600 px-2.5 py-1.5 rounded-md border border-robin-egg-blue-400 truncate max-w-[60%] font-semibold">
                         {link.slug}
                       </code>
                       <button
@@ -102,7 +102,7 @@ export default function LinkList({
                         className={`p-1.5 rounded-md transition-all ${
                           copied === link.slug
                             ? 'text-cambridge-blue-300 bg-cambridge-blue-900'
-                            : 'text-robin-egg-blue-400 hover:text-robin-egg-blue-300 hover:bg-robin-egg-blue-100'
+                            : 'text-robin-egg-blue-400 hover:text-robin-egg-blue-600 hover:bg-robin-egg-blue-100'
                         }`}
                         title="Copy URL"
                         aria-label="Copy URL"
@@ -122,7 +122,7 @@ export default function LinkList({
                       href={link.originalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-robin-egg-blue-200 hover:text-robin-egg-blue-100 hover:underline break-all block font-semibold"
+                      className="text-xs text-robin-egg-blue-400 hover:text-robin-egg-blue-100 hover:underline break-all block font-semibold"
                     >
                       {link.originalUrl}
                     </a>
@@ -181,7 +181,7 @@ export default function LinkList({
                   <tr key={link.id} className="hover:bg-ash-gray-100/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <code className="text-sm font-mono bg-robin-egg-blue-100 text-robin-egg-blue-300 px-2.5 py-1.5 rounded-md border border-robin-egg-blue-200 font-semibold">
+                        <code className="text-sm font-mono bg-robin-egg-blue-100 text-robin-egg-blue-600 px-2.5 py-1.5 rounded-md border border-robin-egg-blue-400 font-semibold">
                           {link.slug}
                         </code>
                         <button
@@ -189,7 +189,7 @@ export default function LinkList({
                           className={`p-1.5 rounded-md transition-all ${
                             copied === link.slug
                               ? 'text-cambridge-blue-300 bg-cambridge-blue-900'
-                              : 'text-robin-egg-blue-400 hover:text-robin-egg-blue-300 hover:bg-robin-egg-blue-100'
+                              : 'text-robin-egg-blue-400 hover:text-robin-egg-blue-600 hover:bg-robin-egg-blue-100'
                           }`}
                           title="Copy URL"
                           aria-label="Copy URL"
@@ -211,7 +211,7 @@ export default function LinkList({
                         href={link.originalUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-robin-egg-blue-200 hover:text-robin-egg-blue-100 hover:underline truncate max-w-md block font-semibold"
+                        className="text-sm text-robin-egg-blue-400 hover:text-robin-egg-blue-100 hover:underline truncate max-w-md block font-semibold"
                       >
                         {link.originalUrl}
                       </a>

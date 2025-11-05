@@ -74,7 +74,7 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
             <button
               type="button"
               onClick={generateRandomSlug}
-              className="text-xs sm:text-sm text-robin-egg-blue-200 hover:text-robin-egg-blue-100 font-bold self-start sm:self-auto transition-colors underline"
+              className="text-xs sm:text-sm text-robin-egg-blue-800 hover:text-robin-egg-blue-900 font-bold self-start sm:self-auto transition-colors underline"
             >
               Generate Random
             </button>
