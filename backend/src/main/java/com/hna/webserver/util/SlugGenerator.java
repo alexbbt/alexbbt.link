@@ -4,11 +4,11 @@ import java.security.SecureRandom;
 
 /**
  * Utility class for generating random slugs for short links.
- * Uses base62 encoding (0-9, a-z, A-Z) for URL-safe slugs.
+ * Uses base36 encoding (0-9, a-z) for URL-safe lowercase slugs.
  */
 public class SlugGenerator {
 
-    private static final String BASE62_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String BASE36_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
     private static final int DEFAULT_LENGTH = 6;
     private static final SecureRandom random = new SecureRandom();
 
@@ -34,7 +34,7 @@ public class SlugGenerator {
 
         StringBuilder slug = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            slug.append(BASE62_CHARS.charAt(random.nextInt(BASE62_CHARS.length())));
+            slug.append(BASE36_CHARS.charAt(random.nextInt(BASE36_CHARS.length())));
         }
         return slug.toString();
     }

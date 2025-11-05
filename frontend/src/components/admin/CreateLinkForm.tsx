@@ -37,7 +37,7 @@ export default function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
   };
 
   const generateRandomSlug = () => {
-    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
     let slug = '';
     for (let i = 0; i < 6; i++) {
       slug += chars.charAt(Math.floor(Math.random() * chars.length));
