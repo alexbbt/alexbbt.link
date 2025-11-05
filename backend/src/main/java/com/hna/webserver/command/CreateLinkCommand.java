@@ -62,11 +62,11 @@ public class CreateLinkCommand implements CommandLineRunner {
                 // Generate random slug
                 slug = SlugGenerator.generateRandomSlug();
                 int attempts = 0;
-                while (shortLinkRepository.existsBySlug(slug) && attempts < 10) {
+                while (shortLinkRepository.existsBySlugIgnoreCase(slug) && attempts < 10) {
                     slug = SlugGenerator.generateRandomSlug();
                     attempts++;
                 }
-                if (shortLinkRepository.existsBySlug(slug)) {
+                if (shortLinkRepository.existsBySlugIgnoreCase(slug)) {
                     throw new IllegalArgumentException("Failed to generate unique slug after 10 attempts");
                 }
             } else {
@@ -77,7 +77,7 @@ public class CreateLinkCommand implements CommandLineRunner {
                 if (SlugGenerator.isReservedSlug(slugInput)) {
                     throw new IllegalArgumentException("Slug is reserved: " + slugInput);
                 }
-                if (shortLinkRepository.existsBySlug(slugInput)) {
+                if (shortLinkRepository.existsBySlugIgnoreCase(slugInput)) {
                     throw new IllegalArgumentException("Slug already exists: " + slugInput);
                 }
                 slug = slugInput;

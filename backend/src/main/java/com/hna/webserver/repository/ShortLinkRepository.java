@@ -13,7 +13,11 @@ public interface ShortLinkRepository extends JpaRepository<ShortLink, Long> {
 
     Optional<ShortLink> findBySlug(String slug);
 
+    Optional<ShortLink> findBySlugIgnoreCase(String slug);
+
     boolean existsBySlug(String slug);
+
+    boolean existsBySlugIgnoreCase(String slug);
 
     @Query("SELECT s FROM ShortLink s WHERE s.isActive = true ORDER BY s.updatedAt DESC")
     List<ShortLink> findActiveLinksOrderByUpdatedAtDesc();

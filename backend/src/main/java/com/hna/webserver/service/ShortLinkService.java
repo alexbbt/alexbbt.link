@@ -55,7 +55,7 @@ public class ShortLinkService {
             if (SlugGenerator.isReservedSlug(slug)) {
                 throw new IllegalArgumentException("Slug is reserved and cannot be used");
             }
-            if (repository.existsBySlug(slug)) {
+            if (repository.existsBySlugIgnoreCase(slug)) {
                 throw new IllegalArgumentException("Slug already exists");
             }
         } else {
@@ -76,15 +76,16 @@ public class ShortLinkService {
 
     /**
      * Retrieves the original URL for a given slug (with caching).
+     * Case-insensitive lookup.
      *
      * @param slug the slug to look up
      * @return the original URL if found and valid
      * @throws IllegalArgumentException if slug not found or link is invalid
      */
-    @Cacheable(value = "shortLinks", key = "#slug")
+    @Cacheable(value = "shortLinks", key = "#slug.toLowerCase()")
     @Transactional(readOnly = true)
     public String getOriginalUrl(String slug) {
-        Optional<ShortLink> optional = repository.findBySlug(slug);
+        Optional<ShortLink> optional = repository.findBySlugIgnoreCase(slug);
         if (optional.isEmpty()) {
             throw new IllegalArgumentException("Short link not found");
         }
@@ -99,13 +100,14 @@ public class ShortLinkService {
 
     /**
      * Increments the click count for a slug (async-friendly).
+     * Case-insensitive lookup.
      *
      * @param slug the slug to increment clicks for
      */
     @Transactional
-    @CacheEvict(value = "shortLinks", key = "#slug")
+    @CacheEvict(value = "shortLinks", key = "#slug.toLowerCase()")
     public void incrementClickCount(String slug) {
-        Optional<ShortLink> optional = repository.findBySlug(slug);
+        Optional<ShortLink> optional = repository.findBySlugIgnoreCase(slug);
         if (optional.isPresent()) {
             ShortLink shortLink = optional.get();
             shortLink.incrementClickCount();
@@ -116,24 +118,26 @@ public class ShortLinkService {
 
     /**
      * Gets a short link by slug (for admin API).
+     * Case-insensitive lookup.
      *
      * @param slug the slug
      * @return the ShortLink if found
      */
     @Transactional(readOnly = true)
     public Optional<ShortLink> getShortLinkBySlug(String slug) {
-        return repository.findBySlug(slug);
+        return repository.findBySlugIgnoreCase(slug);
     }
 
     /**
      * Deletes a short link by slug.
+     * Case-insensitive lookup.
      *
      * @param slug the slug to delete
      */
     @Transactional
-    @CacheEvict(value = "shortLinks", key = "#slug")
+    @CacheEvict(value = "shortLinks", key = "#slug.toLowerCase()")
     public void deleteShortLink(String slug) {
-        Optional<ShortLink> optional = repository.findBySlug(slug);
+        Optional<ShortLink> optional = repository.findBySlugIgnoreCase(slug);
         if (optional.isPresent()) {
             repository.delete(optional.get());
             logger.info("Deleted short link: {}", slug);
@@ -149,7 +153,7 @@ public class ShortLinkService {
     private String generateUniqueSlug() {
         for (int attempt = 0; attempt < MAX_SLUG_GENERATION_ATTEMPTS; attempt++) {
             String slug = SlugGenerator.generateRandomSlug();
-            if (!repository.existsBySlug(slug)) {
+            if (!repository.existsBySlugIgnoreCase(slug)) {
                 return slug;
             }
             logger.warn("Slug collision detected: {}, attempt {}", slug, attempt + 1);
