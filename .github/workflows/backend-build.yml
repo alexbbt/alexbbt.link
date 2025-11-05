@@ -71,11 +71,6 @@ jobs:
       run: ./gradlew test
       env:
         SPRING_PROFILES_ACTIVE: test
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/app
-        SPRING_DATASOURCE_USERNAME: app
-        SPRING_DATASOURCE_PASSWORD: app
-        SPRING_DATA_REDIS_HOST: localhost
-        SPRING_DATA_REDIS_PORT: 6379
 
     - name: Build application
       working-directory: ./backend
