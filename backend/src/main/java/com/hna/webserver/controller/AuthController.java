@@ -46,9 +46,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         log.info("Login attempt for user: {} from origin: {}", loginRequest.getUsername(), request.getHeader("Origin"));
-        log.debug("Request headers: User-Agent={}, Content-Type={}", 
+        log.debug("Request headers: User-Agent={}, Content-Type={}",
             request.getHeader("User-Agent"), request.getHeader("Content-Type"));
-        
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
