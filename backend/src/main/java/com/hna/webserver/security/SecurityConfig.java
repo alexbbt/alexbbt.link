@@ -21,10 +21,14 @@ public class SecurityConfig {
 
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final RequestLoggingFilter requestLoggingFilter;
 
-    public SecurityConfig(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(JwtTokenProvider tokenProvider,
+                         CustomUserDetailsService userDetailsService,
+                         RequestLoggingFilter requestLoggingFilter) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
+        this.requestLoggingFilter = requestLoggingFilter;
     }
 
     @Bean
@@ -57,6 +61,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/shortlinks/**").authenticated()
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
