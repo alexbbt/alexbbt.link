@@ -13,4 +13,9 @@
         <Class name="com.hna.webserver.controller.ShortLinkController"/>
         <Method name="&lt;init&gt;"/>
     </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name="com.hna.webserver.security.SecurityConfig"/>
+        <Method name="&lt;init&gt;"/>
+    </Match>
 </FindBugsFilter>
