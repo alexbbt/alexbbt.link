@@ -99,12 +99,20 @@ export default function AdminPage() {
         onLogout={handleLogout}
         additionalButtons={
           user.roles.includes('ADMIN') ? (
-            <button
-              onClick={() => router.push('/admin/all')}
-              className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-robin-egg-blue-600 bg-robin-egg-blue-100 border border-robin-egg-blue-400 rounded-lg hover:bg-robin-egg-blue-900 hover:border-robin-egg-blue-700 transition-all duration-200"
-            >
-              All Links
-            </button>
+            <>
+              <button
+                onClick={() => router.push('/admin/all')}
+                className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-robin-egg-blue-600 bg-robin-egg-blue-100 border border-robin-egg-blue-400 rounded-lg hover:bg-robin-egg-blue-900 hover:border-robin-egg-blue-700 transition-all duration-200"
+              >
+                All Links
+              </button>
+              <button
+                onClick={() => router.push('/admin/logs')}
+                className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-robin-egg-blue-600 bg-robin-egg-blue-100 border border-robin-egg-blue-400 rounded-lg hover:bg-robin-egg-blue-900 hover:border-robin-egg-blue-700 transition-all duration-200"
+              >
+                Request Logs
+              </button>
+            </>
           ) : undefined
         }
       />

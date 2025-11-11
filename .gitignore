@@ -252,6 +252,8 @@ temp/
 logs/
 *.log.*
 log/
+# Exception: Don't ignore the admin logs page
+!frontend/src/app/admin/logs/
 
 # ===========================================
 # APPLICATION SPECIFIC

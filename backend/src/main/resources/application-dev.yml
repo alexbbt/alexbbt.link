@@ -42,3 +42,5 @@ logging:
   level:
     org.springframework.data.redis: DEBUG
     org.springframework.mail: DEBUG
+    com.hna.webserver.service.LinkVisitService: INFO
+    com.hna.webserver.controller.RedirectController: DEBUG

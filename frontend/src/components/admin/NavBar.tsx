@@ -35,7 +35,7 @@ export default function NavBar({ title, subtitle, user, onLogout, additionalButt
             {additionalButtons}
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-ultra-violet-400">{user.username}</p>
-              <p className="text-xs text-ultra-violet-600 truncate max-w-[150px]">{user.email}</p>
+              <p className="text-xs text-ultra-violet-600">{user.email}</p>
             </div>
             <button
               onClick={onLogout}

@@ -115,6 +115,40 @@ export interface ShortLinkStats {
   averageClicksPerLink: number;
 }
 
+// Visit log types
+export interface LinkVisit {
+  id: number;
+  slug: string;
+  shortUrl: string;
+  createdAt: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  referrer: string | null;
+  statusCode: number | null;
+  countryCode: string | null;
+  deviceType: string | null;
+  browser: string | null;
+  operatingSystem: string | null;
+}
+
+export interface LinkVisitsResponse {
+  content: LinkVisit[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  size: number;
+}
+
+export interface VisitAnalytics {
+  totalVisits: number;
+  slug?: string;
+  username?: string;
+  visitsByDate?: Array<[string, number]>;
+  visitsByCountry?: Array<[string, number]>;
+  visitsByDevice?: Array<[string, number]>;
+  visitsByBrowser?: Array<[string, number]>;
+}
+
 // Auth types
 export interface LoginRequest {
   username: string;
@@ -185,6 +219,45 @@ export const api = {
     // Get statistics for all links (admin only)
     statsAll: () =>
       apiCall<ShortLinkStats>('/shortlinks/stats/all'),
+  },
+
+  // Visit log endpoints
+  visits: {
+    // Get visits for a specific link
+    getForLink: (slug: string, page = 0, size = 20) =>
+      apiCall<LinkVisitsResponse>(`/visits/link/${slug}?page=${page}&size=${size}`),
+
+    // Get visit count for a specific link
+    getCountForLink: (slug: string) =>
+      apiCall<{ slug: string; visitCount: number }>(`/visits/link/${slug}/count`),
+
+    // Get analytics for a specific link
+    getAnalyticsForLink: (slug: string) =>
+      apiCall<VisitAnalytics>(`/visits/link/${slug}/analytics`),
+
+    // Get visits for user's links
+    getForUser: (page = 0, size = 20) =>
+      apiCall<LinkVisitsResponse>(`/visits?page=${page}&size=${size}`),
+
+    // Get visit count for user's links
+    getCountForUser: () =>
+      apiCall<{ username: string; visitCount: number }>('/visits/count'),
+
+    // Get analytics for user's links
+    getAnalyticsForUser: () =>
+      apiCall<VisitAnalytics>('/visits/analytics'),
+
+    // Get all visits (admin only)
+    getAll: (page = 0, size = 20) =>
+      apiCall<LinkVisitsResponse>(`/visits/all?page=${page}&size=${size}`),
+
+    // Get all analytics (admin only)
+    getAllAnalytics: () =>
+      apiCall<VisitAnalytics>('/visits/all/analytics'),
+
+    // Get all redirect requests including 404s (admin only)
+    getRedirectRequests: (page = 0, size = 20) =>
+      apiCall<LinkVisitsResponse>(`/visits/redirects?page=${page}&size=${size}`),
   },
 };
 

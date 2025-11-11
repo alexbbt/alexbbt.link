@@ -1,6 +1,9 @@
 package com.hna.webserver.controller;
 
+import com.hna.webserver.service.LinkVisitService;
 import com.hna.webserver.service.ShortLinkService;
+import com.hna.webserver.util.RequestUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +36,11 @@ public class RedirectController {
     );
 
     private final ShortLinkService shortLinkService;
+    private final LinkVisitService linkVisitService;
 
-    public RedirectController(ShortLinkService shortLinkService) {
+    public RedirectController(ShortLinkService shortLinkService, LinkVisitService linkVisitService) {
         this.shortLinkService = shortLinkService;
+        this.linkVisitService = linkVisitService;
     }
 
     /**
@@ -46,11 +51,12 @@ public class RedirectController {
      * which are handled by static resources or other controllers.
      *
      * @param slug the slug to redirect
+     * @param request the HTTP request
      * @param response HTTP response to set redirect
      * @throws IOException if redirect fails
      */
     @GetMapping("/{slug:[^.]+}")
-    public void redirect(@PathVariable String slug, HttpServletResponse response) throws IOException {
+    public void redirect(@PathVariable String slug, HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Skip reserved paths - these should never reach here due to regex pattern and static resources
         // But handle gracefully just in case
         if (RESERVED_PATHS.contains(slug.toLowerCase())) {
@@ -58,17 +64,36 @@ public class RedirectController {
             return;
         }
 
+        int statusCode = HttpStatus.FOUND.value(); // 302
+        final int finalStatusCode = statusCode; // Capture for lambda
+
+        // Extract request data before starting thread (HttpServletRequest is not thread-safe)
+        final String clientIp = RequestUtils.getClientIpAddress(request);
+        final String userAgent = RequestUtils.getUserAgent(request);
+        final String referrer = RequestUtils.getReferrer(request);
+
         try {
             // Get original URL (with caching)
             String originalUrl = shortLinkService.getOriginalUrl(slug);
 
             // Increment click count asynchronously (fire and forget)
-            // Using a separate thread to avoid blocking the redirect
             new Thread(() -> {
                 try {
                     shortLinkService.incrementClickCount(slug);
                 } catch (Exception e) {
                     logger.error("Failed to increment click count for slug: {}", slug, e);
+                }
+            }).start();
+
+            // Log visit asynchronously (fire and forget)
+            // Using a thread to ensure it doesn't block the redirect
+            // Extract request data first since HttpServletRequest is not thread-safe
+            final String finalSlug = slug;
+            new Thread(() -> {
+                try {
+                    linkVisitService.logVisit(finalSlug, clientIp, userAgent, referrer, finalStatusCode);
+                } catch (Exception e) {
+                    logger.error("Failed to log visit in thread for slug: {}", finalSlug, e);
                 }
             }).start();
 
@@ -78,12 +103,38 @@ public class RedirectController {
 
         } catch (IllegalArgumentException e) {
             logger.warn("Invalid slug or link not found: {}", slug);
-            response.setStatus(HttpStatus.NOT_FOUND.value());
+            final int notFoundStatusCode = HttpStatus.NOT_FOUND.value();
+            response.setStatus(notFoundStatusCode);
             response.getWriter().write("Short link not found");
+            // Log failed visit attempt
+            final String notFoundSlug = slug;
+            final String notFoundIp = RequestUtils.getClientIpAddress(request);
+            final String notFoundUserAgent = RequestUtils.getUserAgent(request);
+            final String notFoundReferrer = RequestUtils.getReferrer(request);
+            new Thread(() -> {
+                try {
+                    linkVisitService.logVisit(notFoundSlug, notFoundIp, notFoundUserAgent, notFoundReferrer, notFoundStatusCode);
+                } catch (Exception ex) {
+                    logger.error("Failed to log visit in thread for slug: {}", notFoundSlug, ex);
+                }
+            }).start();
         } catch (Exception e) {
             logger.error("Error redirecting slug: {}", slug, e);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            final int errorStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            response.setStatus(errorStatusCode);
             response.getWriter().write("Internal server error");
+            // Log error visit
+            final String errorSlug = slug;
+            final String errorIp = RequestUtils.getClientIpAddress(request);
+            final String errorUserAgent = RequestUtils.getUserAgent(request);
+            final String errorReferrer = RequestUtils.getReferrer(request);
+            new Thread(() -> {
+                try {
+                    linkVisitService.logVisit(errorSlug, errorIp, errorUserAgent, errorReferrer, errorStatusCode);
+                } catch (Exception ex) {
+                    logger.error("Failed to log visit in thread for slug: {}", errorSlug, ex);
+                }
+            }).start();
         }
     }
 }

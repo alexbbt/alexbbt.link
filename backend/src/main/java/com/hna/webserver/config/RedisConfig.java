@@ -11,11 +11,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableCaching
+@EnableAsync
 public class RedisConfig {
 
     /**
@@ -46,5 +50,13 @@ public class RedisConfig {
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)
                 .build();
+    }
+
+    /**
+     * Executor for async visit logging tasks.
+     */
+    @Bean(name = "visitLoggingExecutor")
+    public Executor visitLoggingExecutor() {
+        return Executors.newFixedThreadPool(5);
     }
 }

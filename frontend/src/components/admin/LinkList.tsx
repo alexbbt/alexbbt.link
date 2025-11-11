@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { api, ShortLink, handleApiError } from '@/lib/api';
+import VisitLogs from './VisitLogs';
 
 // Format date consistently to avoid hydration mismatches
 function formatDate(dateString: string): string {
@@ -34,6 +35,7 @@ export default function LinkList({
 }: LinkListProps) {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [viewingLogsFor, setViewingLogsFor] = useState<string | null>(null);
 
   const handleDelete = async (slug: string) => {
     if (!confirm('Are you sure you want to delete this short link?')) {
@@ -73,7 +75,11 @@ export default function LinkList({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-ash-gray-200 overflow-hidden">
+    <>
+      {viewingLogsFor && (
+        <VisitLogs slug={viewingLogsFor} onClose={() => setViewingLogsFor(null)} />
+      )}
+      <div className="bg-white rounded-xl border border-ash-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-ash-gray-900">
         <h2 className="text-lg sm:text-xl font-semibold text-ultra-violet-400">
           {showCreatedBy ? 'All Short Links' : 'My Short Links'}
@@ -139,6 +145,12 @@ export default function LinkList({
                 <div className="flex items-center justify-between text-xs text-ultra-violet-500 pt-2 border-t border-ash-gray-900">
                   <div className="flex items-center gap-4">
                     <span className="font-semibold text-ultra-violet-400">{link.clickCount} clicks</span>
+                    <button
+                      onClick={() => setViewingLogsFor(link.slug)}
+                      className="text-robin-egg-blue-400 hover:text-robin-egg-blue-600 hover:underline font-semibold"
+                    >
+                      View Logs
+                    </button>
                     {showCreatedBy && (
                       <span className="text-ultra-violet-600">by {link.createdBy || 'N/A'}</span>
                     )}
@@ -228,13 +240,21 @@ export default function LinkList({
                       {formatDate(link.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <button
-                        onClick={() => handleDelete(link.slug)}
-                        disabled={deleting === link.slug}
-                        className="px-3 py-1.5 text-xs font-semibold text-red-700 hover:text-red-800 hover:bg-red-100 rounded-lg border border-red-300 disabled:opacity-100 disabled:cursor-not-allowed transition-all"
-                      >
-                        {deleting === link.slug ? 'Deleting...' : 'Delete'}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setViewingLogsFor(link.slug)}
+                          className="px-3 py-1.5 text-xs font-semibold text-robin-egg-blue-700 hover:text-robin-egg-blue-800 hover:bg-robin-egg-blue-100 rounded-lg border border-robin-egg-blue-300 transition-all"
+                        >
+                          View Logs
+                        </button>
+                        <button
+                          onClick={() => handleDelete(link.slug)}
+                          disabled={deleting === link.slug}
+                          className="px-3 py-1.5 text-xs font-semibold text-red-700 hover:text-red-800 hover:bg-red-100 rounded-lg border border-red-300 disabled:opacity-100 disabled:cursor-not-allowed transition-all"
+                        >
+                          {deleting === link.slug ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -267,5 +287,6 @@ export default function LinkList({
         </>
       )}
     </div>
+    </>
   );
 }
