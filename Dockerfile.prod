@@ -6,13 +6,16 @@ FROM node:22-alpine AS frontend-build
 WORKDIR /app/frontend
 
 # Copy package files and install dependencies (cached layer)
+# Use BuildKit cache mount for npm cache to speed up installs
 COPY frontend/package*.json ./
-RUN npm ci --prefer-offline --no-audit
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline --no-audit --silent
 
 # Copy source and build (only rebuilds when source changes)
 COPY frontend/ ./
 ENV NEXT_STATIC_EXPORT=true
-RUN npm run build && test -d out || (echo "Next.js build failed" && exit 1)
+RUN --mount=type=cache,target=/app/frontend/.next/cache \
+    npm run build && test -d out || (echo "Next.js build failed" && exit 1)
 
 # Stage 2: Build Spring Boot backend
 FROM gradle:8-jdk17 AS backend-build
@@ -23,8 +26,11 @@ COPY backend/gradlew* ./
 COPY backend/gradle ./gradle
 COPY backend/build.gradle backend/settings.gradle ./
 
-# Download dependencies (heavy, but cached unless build.gradle changes)
-RUN ./gradlew dependencies --no-daemon --quiet || true
+# Download dependencies with BuildKit cache mount for Gradle cache
+# This significantly speeds up dependency resolution
+RUN --mount=type=cache,target=/root/.gradle/caches \
+    --mount=type=cache,target=/root/.gradle/wrapper \
+    ./gradlew dependencies --no-daemon --quiet || true
 
 # Copy source code (only rebuilds when source changes)
 COPY backend/src ./src
@@ -33,8 +39,10 @@ COPY backend/config ./config
 # Copy Next.js static files to Spring Boot resources
 COPY --from=frontend-build /app/frontend/out ./src/main/resources/static
 
-# Build JAR (skip clean - no need in fresh container)
-RUN ./gradlew build -x test -x spotbugsMain -x spotbugsTest --no-daemon --parallel
+# Build JAR with BuildKit cache mount (skip clean - no need in fresh container)
+RUN --mount=type=cache,target=/root/.gradle/caches \
+    --mount=type=cache,target=/root/.gradle/wrapper \
+    ./gradlew build -x test -x spotbugsMain -x spotbugsTest --no-daemon --parallel --build-cache
 
 # Stage 3: Production runtime
 FROM eclipse-temurin:17-jre
