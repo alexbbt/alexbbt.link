@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
-    <!-- 
+    <!--
         Global exclusions for common false positives in Spring Boot applications:
-        
+
         1. EI_EXPOSE_REP2 for constructor dependency injection in Spring components
            - Spring services are managed by the container and shouldn't be mutated externally
            - Fields are typically final, preventing reassignment
            - Applies to: controllers, config classes, and other Spring-managed components
-           
+
         2. EI_EXPOSE_REP/EI_EXPOSE_REP2 for JPA entity relationships
            - JPA entities are designed to have bidirectional relationships
            - Exposing entity references directly is the standard JPA pattern
            - Applies to: all model classes in com.hna.webserver.model package
     -->
-    
+
     <!-- Exclude EI_EXPOSE_REP2 for all constructor dependency injection in Spring components -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP2"/>
         <Class name="~com\.hna\.webserver\.(controller|config|security)\..*"/>
         <Method name="&lt;init&gt;"/>
     </Match>
-    
+
     <!-- Exclude EI_EXPOSE_REP and EI_EXPOSE_REP2 for all JPA entity relationships -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP"/>
